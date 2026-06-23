@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>West Virginia General Revenue — FY2026 Budget Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#ECEEF0; --card:#FFFFFF; --ink:#13212E; --ink2:#22384A; --slate:#5C6B78;
+  --line:#D6DBDF; --gold:#B0822F; --gold-soft:#E8D6AB; --teal:#2D6E68; --clay:#A33526; --clay-soft:#F0DBD4;
+  --display:'Archivo',system-ui,-apple-system,Segoe UI,sans-serif;
+  --body:'Inter',system-ui,-apple-system,Segoe UI,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+a{color:var(--ink);text-underline-offset:3px}
+h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.05;letter-spacing:-.01em;margin:0}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+
+/* sticky nav */
+.nav{position:sticky;top:0;z-index:40;background:rgba(19,33,46,.96);backdrop-filter:blur(6px);border-bottom:1px solid #20384a}
+.nav .wrap{display:flex;align-items:center;gap:18px;height:52px}
+.nav .brand{font-family:var(--display);font-weight:800;color:#fff;font-size:15px;letter-spacing:-.01em;white-space:nowrap}
+.nav .brand b{color:var(--gold-soft)}
+.nav .links{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}
+.nav .links a{color:#aebcc7;text-decoration:none;font-size:13px;padding:7px 11px;border-radius:7px}
+.nav .links a:hover{color:#fff;background:#22384a}
+
+/* masthead */
+.mast{background:var(--ink);color:#eef2f5;padding:54px 0 0}
+.mast .eyebrow{color:var(--gold-soft)}
+.mast h1{color:#fff;font-size:clamp(34px,6vw,62px);font-weight:800;margin:14px 0 0}
+.mast h1 em{font-style:normal;color:var(--gold-soft)}
+.mast .lede{max-width:60ch;color:#c2cdd6;font-size:18px;margin:16px 0 0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#26405380;margin-top:34px;border-top:1px solid #2a4256}
+.stat{background:var(--ink);padding:18px 20px}
+.stat .n{font-family:var(--mono);font-weight:600;font-size:clamp(22px,3.4vw,30px);color:#fff;letter-spacing:-.02em}
+.stat .l{font-size:12.5px;color:#9fb0bc;margin-top:3px}
+.ridge{height:0;border-bottom:2px solid var(--gold);opacity:.85}
+
+section{padding:56px 0}
+.sec-h{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:8px}
+.sec-h h2{font-size:clamp(24px,3.6vw,34px)}
+.sec-sub{color:var(--slate);max-width:68ch;margin:10px 0 26px;font-size:15.5px}
+
+/* category bars */
+.cats{display:flex;flex-direction:column;gap:13px}
+.catrow{cursor:pointer;border:none;background:none;text-align:left;padding:0;font:inherit;color:inherit;width:100%}
+.catrow .top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:5px}
+.catrow .cl{font-weight:600;font-size:15px}
+.catrow .cv{font-family:var(--mono);font-size:14px;color:var(--ink2)}
+.catrow .cv .pct{color:var(--slate);font-size:12px;margin-left:8px}
+.track{height:13px;background:#dde2e6;border-radius:2px;overflow:hidden}
+.track>span{display:block;height:100%;background:var(--ink2);border-radius:2px;transition:width .7s cubic-bezier(.2,.7,.2,1)}
+.catrow:nth-child(1) .track>span{background:var(--gold)}
+.catrow:hover .track>span{background:var(--teal)}
+.catrow.active .cl{color:var(--clay)}
+.catrow.active .track>span{background:var(--clay)}
+
+/* controls */
+.controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:0 0 18px}
+.search{flex:1;min-width:240px;display:flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:11px 13px}
+.search input{border:none;outline:none;font:inherit;width:100%;background:none;color:var(--ink)}
+.search svg{flex:none;color:var(--slate)}
+select{font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--ink)}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:22px}
+.chip{font:inherit;font-size:13px;padding:6px 12px;border:1px solid var(--line);background:var(--card);border-radius:999px;cursor:pointer;color:var(--ink2)}
+.chip:hover{border-color:var(--ink2)}
+.chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+/* ledger */
+.ledger{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.unit{border-bottom:1px solid var(--line);background:var(--card)}
+.uhead{width:100%;text-align:left;font:inherit;color:inherit;background:none;border:none;cursor:pointer;
+  display:grid;grid-template-columns:22px 1fr auto;gap:14px;align-items:center;padding:15px 16px}
+.uhead:hover{background:#f6f8f9}
+.uhead .car{color:var(--slate);transition:transform .25s;font-family:var(--mono);font-size:14px;text-align:center}
+.unit.open .uhead .car{transform:rotate(90deg);color:var(--gold)}
+.uhead .nm{font-weight:600;font-size:15.5px}
+.uhead .meta{display:flex;gap:9px;align-items:center;margin-top:3px;flex-wrap:wrap}
+.tag{font-size:11px;letter-spacing:.02em;color:var(--ink2);background:#eef1f3;border:1px solid #e0e5e8;padding:2px 8px;border-radius:999px}
+.uhead .fund{font-family:var(--mono);font-size:11.5px;color:var(--slate)}
+.uhead .tot{font-family:var(--mono);font-weight:600;font-size:16px;text-align:right;white-space:nowrap}
+.body{display:none;padding:4px 16px 18px 52px;background:#fbfcfc;border-top:1px dashed var(--line)}
+.unit.open .body{display:block;animation:rise .3s ease}
+@keyframes rise{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+
+/* dotted-leader line items — the signature */
+.li{display:flex;align-items:baseline;gap:9px;padding:5.5px 0;font-size:14px}
+.li .lnm{color:var(--ink2)}
+.li.neg .lnm,.li.neg .lamt{color:var(--clay)}
+.li .dots{flex:1;border-bottom:1.5px dotted #c4ccd2;transform:translateY(-4px);min-width:18px}
+.li .lcode{font-family:var(--mono);font-size:11.5px;color:#94a2ad;letter-spacing:.03em}
+.li .lamt{font-family:var(--mono);font-size:13.5px;text-align:right;min-width:118px;color:var(--ink)}
+.li.peia{background:#fbf4e4;margin:0 -8px;padding-left:8px;padding-right:8px;border-radius:5px}
+.li.peia .lnm{color:var(--gold);font-weight:600}
+.chkrow{display:flex;justify-content:space-between;align-items:baseline;margin-top:11px;padding-top:9px;border-top:1.5px solid var(--ink2)}
+.chkrow .ck{font-size:12px;color:var(--teal);font-weight:600}
+.chkrow .ck.bad{color:var(--clay)}
+.chkrow .ctot{font-family:var(--mono);font-weight:600;font-size:15px}
+.nodetail{color:var(--slate);font-size:13.5px;font-style:italic;padding:6px 0}
+.count{color:var(--slate);font-size:13px;margin:14px 2px 0}
+
+/* PEIA */
+.peia{background:var(--ink);color:#e9eef2}
+.peia .eyebrow{color:var(--gold-soft)}
+.peia h2{color:#fff}
+.peia .sec-sub{color:#aebcc7}
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:6px 0 28px}
+.pcard{background:#1c3243;border:1px solid #2b465a;border-radius:11px;padding:16px}
+.pcard .pn{font-family:var(--mono);font-weight:600;font-size:24px;color:#fff;letter-spacing:-.02em}
+.pcard .pl{font-size:12.5px;color:#a6b6c2;margin-top:4px}
+.ptraj{display:grid;grid-template-columns:1fr;gap:9px;background:#16293700;margin:0 0 26px}
+.trow{display:grid;grid-template-columns:200px 1fr 52px;gap:12px;align-items:center}
+.trow .tlab{font-size:13px;color:#c2cdd6}
+.trow .tbar{height:11px;background:#26405380;border-radius:2px;overflow:hidden}
+.trow .tbar>span{display:block;height:100%;background:var(--gold)}
+.trow.calm .tbar>span{background:var(--teal)}
+.trow .tval{font-family:var(--mono);font-size:13px;color:#fff;text-align:right}
+.pfacts{columns:2;column-gap:34px}
+.pfacts li{break-inside:avoid;margin:0 0 13px;color:#c8d2da;font-size:14.5px;line-height:1.5}
+.pfacts li::marker{color:var(--gold)}
+.pconcern{margin-top:24px;background:#3a1f1a;border:1px solid #5a2e26;border-left:4px solid var(--clay);border-radius:10px;padding:18px 20px}
+.pconcern .h{font-family:var(--display);font-weight:700;color:#f0c8bf;font-size:16px;margin-bottom:7px;letter-spacing:.01em}
+.pconcern p{margin:0;color:#e6cdc7;font-size:14.5px}
+
+/* watch list */
+.watch .sec-sub b{color:var(--clay)}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.flag{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--clay);border-radius:11px;padding:18px 19px}
+.flag .ft{font-family:var(--display);font-weight:700;font-size:17px;line-height:1.2;margin-bottom:9px}
+.flag .amt{display:inline-block;font-family:var(--mono);font-weight:600;font-size:13px;color:var(--clay);background:var(--clay-soft);padding:3px 9px;border-radius:6px;margin-bottom:9px}
+.flag .unit{font-size:12.5px;color:var(--slate);margin-bottom:9px;font-family:var(--mono)}
+.flag .why{font-size:14px;color:var(--ink2);margin:0}
+
+/* footer */
+footer{background:var(--ink);color:#a6b6c2;padding:46px 0 60px;border-top:2px solid var(--gold)}
+footer h3{color:#fff;font-size:15px;margin-bottom:12px}
+footer .cols{display:grid;grid-template-columns:1.3fr 1fr;gap:34px}
+footer p,footer li{font-size:13.5px;line-height:1.6}
+footer ul{margin:0;padding:0;list-style:none}
+footer li{margin-bottom:10px}
+footer a{color:var(--gold-soft)}
+.note{background:#1c3243;border:1px solid #2b465a;border-radius:10px;padding:14px 16px;font-size:13px;color:#bcc8d1;margin-top:18px}
+
+@media(max-width:760px){
+  .stats{grid-template-columns:1fr 1fr}
+  .pgrid{grid-template-columns:1fr 1fr}
+  .pfacts{columns:1}
+  .cards{grid-template-columns:1fr}
+  footer .cols{grid-template-columns:1fr}
+  .uhead{grid-template-columns:18px 1fr;}
+  .uhead .tot{grid-column:2;text-align:left;margin-top:6px}
+  .trow{grid-template-columns:120px 1fr 46px}
+  .li .lamt{min-width:96px}
+}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <div class="brand">WV <b>Open Budget</b> · GR FY2026</div>
+  <div class="links">
+    <a href="#where">Where it goes</a><a href="#browse">Browse</a><a href="#peia">PEIA</a><a href="#watch">Watch list</a><a href="#about">Sources</a>
+  </div>
+</div></nav>
+
+<header class="mast"><div class="wrap">
+  <div class="eyebrow">West Virginia · General Revenue Fund · FY2026 Enacted</div>
+  <h1>See where the <em>money</em> goes.</h1>
+  <p class="lede">A line-by-line look at the General Revenue budget the Legislature enacted — searchable, sortable, and broken down to the individual appropriation. No spin: the numbers as written, with the spots worth a harder look flagged.</p>
+  <div class="stats" id="stats"></div>
+</div>
+<div class="ridge"></div>
+</header>
+
+<section id="where"><div class="wrap">
+  <div class="sec-h"><h2>Where it goes</h2></div>
+  <p class="sec-sub">General Revenue is the state's discretionary core — the roughly $5.3&nbsp;billion lawmakers decide each year (separate from Road, Lottery, and federal funds). Here's how the dollars in this view divide across functions. Select a category to filter the list below.</p>
+  <div class="cats" id="cats"></div>
+</div></section>
+
+<section id="browse" style="padding-top:8px"><div class="wrap">
+  <div class="sec-h"><h2>Browse the budget</h2></div>
+  <p class="sec-sub">Search any agency or program, sort by size, and click a spending unit to open its individual appropriation lines. Where a unit shows full detail, its line items are validated to sum exactly to the bill's stated total.</p>
+  <div class="controls">
+    <label class="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="q" type="search" placeholder="Search agencies and programs…" autocomplete="off">
+    </label>
+    <select id="sort" aria-label="Sort order">
+      <option value="amt">Largest first</option>
+      <option value="az">A to Z</option>
+      <option value="cat">By category</option>
+    </select>
+  </div>
+  <div class="chips" id="chips"></div>
+  <div class="ledger" id="ledger"></div>
+  <div class="count" id="count"></div>
+</div></section>
+
+<section class="peia" id="peia"><div class="wrap">
+  <div class="eyebrow">Deep dive</div>
+  <div class="sec-h"><h2>PEIA: the cost the budget barely shows</h2></div>
+  <p class="sec-sub">Public employees' health insurance is one of the state's largest obligations — yet the appropriations bill names it on exactly one line. Here is what's behind it, and why it keeps landing on workers.</p>
+  <div class="pgrid" id="pgrid"></div>
+  <div class="ptraj" id="ptraj"></div>
+  <ul class="pfacts" id="pfacts"></ul>
+  <div class="pconcern"><div class="h">The structural problem</div><p id="pconcern"></p></div>
+</div></section>
+
+<section class="watch" id="watch"><div class="wrap">
+  <div class="sec-h"><h2>Watch list — where to look harder</h2></div>
+  <p class="sec-sub">These are <b>analytical flags grounded in the numbers</b>, not partisan claims. Several are legitimate policy choices reasonable people weigh differently — but each is a place where dollars, structure, or transparency deserve scrutiny. Every flag ties to a specific figure in the bill.</p>
+  <div class="cards" id="cards"></div>
+</div></section>
+
+<footer id="about"><div class="wrap">
+  <div class="cols">
+    <div>
+      <h3>Methodology</h3>
+      <p>Figures are transcribed verbatim from the enrolled bill's General Revenue section (Title&nbsp;II, §1) and, for every unit shown with line items, validated in code to sum exactly to the bill's stated total. "Enacted" reflects the bill as passed; the Governor's line-item vetoes (FY2026) trim some amounts further — true post-veto figures arrive with the full build.</p>
+      <div class="note" id="coverage"></div>
+    </div>
+    <div>
+      <h3>Sources</h3>
+      <ul id="sources"></ul>
+      <h3 style="margin-top:22px">What's next</h3>
+      <p>The complete build adds the remaining spending units and grand-total reconciliation, the other funds (Road, Lottery, Excess Lottery, Federal), fiscal years 2024, 2025 and 2027, the Governor's proposed-vs-enacted comparison, and PEIA's full Finance-Board financial plan — produced by parsing the source PDFs directly.</p>
+    </div>
+  </div>
+</div></footer>
+
+<script>
+const DATA = {"cats": {"k12": "K-12 Education", "highered": "Higher Education", "medicaid": "Medicaid & Health Coverage", "pubhealth": "Public Health", "human": "Human Services & Child Welfare", "hospitals": "State Psychiatric & LTC Hospitals", "safety": "Corrections & Public Safety", "legal": "Courts & Legal", "govt": "General Government", "commerce": "Commerce, Workforce & Culture", "envnr": "Agriculture, Environment & Natural Resources", "transport": "Transportation", "veterans": "Veterans & Seniors"}, "units": [{"n": 1, "name": "Senate", "fund": "0165", "org": "2100", "cat": "govt", "total": 6652206, "items": null}, {"n": 2, "name": "House of Delegates", "fund": "0170", "org": "2200", "cat": "govt", "total": 12485000, "items": null}, {"n": 3, "name": "Joint Expenses (Legislature)", "fund": "0175", "org": "2300", "cat": "govt", "total": 12240457, "items": null}, {"n": 4, "name": "Supreme Court of Appeals – General Judicial", "fund": "0180", "org": "2400", "cat": "legal", "total": 168226450, "items": [["Personal Services and Employee Benefits", "00100", 140730477], ["Repairs and Alterations", "06400", 45000], ["Equipment", "07000", 1600000], ["Military Services Members Court", "09002", 0], ["Judges' Retirement System", "11000", 1247000], ["Current Expenses", "13000", 23326564], ["Buildings", "25800", 165000], ["Other Assets", "69000", 80000], ["BRIM Premium", "91300", 1032409]]}, {"n": 5, "name": "Governor's Office", "fund": "0101", "org": "0100", "cat": "govt", "total": 6320488, "items": [["Personal Services and Employee Benefits", "00100", 3357899], ["Salary and Benefits of Elected Officials", "00200", 266594], ["Repairs and Alterations", "06400", 25000], ["Equipment", "07000", 1000], ["National Governors Association", "12300", 60700], ["Current Expenses", "13000", 799000], ["Community Food Program", "18500", 1000000], ["Office of Resiliency", "18600", 626650], ["BRIM Premium", "91300", 183645]]}, {"n": 6, "name": "Governor's Office – Custodial Fund", "fund": "0102", "org": "0100", "cat": "govt", "total": 619913, "items": null}, {"n": 7, "name": "Governor's Office – Civil Contingent Fund", "fund": "0105", "org": "0100", "cat": "govt", "total": 10000000, "items": [["Civil Contingent Fund", "61400", 5000000], ["Local Economic Development Assistance", "81900", 5000000]]}, {"n": 8, "name": "Auditor's Office – General Administration", "fund": "0116", "org": "1200", "cat": "govt", "total": 2784484, "items": null}, {"n": 9, "name": "Treasurer's Office", "fund": "0126", "org": "1300", "cat": "govt", "total": 3764435, "items": null}, {"n": 10, "name": "Department of Agriculture", "fund": "0131", "org": "1400", "cat": "envnr", "total": 14379426, "items": null}, {"n": 11, "name": "WV Conservation Agency", "fund": "0132", "org": "1400", "cat": "envnr", "total": 12294361, "items": [["Personal Services and Employee Benefits", "00100", 927240], ["Unclassified", "09900", 77059], ["Soil Conservation Projects", "12000", 10937786], ["Current Expenses", "13000", 317848], ["BRIM Premium", "91300", 34428]]}, {"n": 12, "name": "Dept. of Agriculture – Meat Inspection Fund", "fund": "0135", "org": "1400", "cat": "envnr", "total": 1187422, "items": null}, {"n": 13, "name": "Dept. of Agriculture – Agricultural Awards Fund", "fund": "0136", "org": "1400", "cat": "envnr", "total": 15000, "items": null}, {"n": 14, "name": "Dept. of Agriculture – Land Protection Authority", "fund": "0607", "org": "1400", "cat": "envnr", "total": 110465, "items": null}, {"n": 15, "name": "Attorney General", "fund": "0150", "org": "1500", "cat": "legal", "total": 5986622, "items": null}, {"n": 16, "name": "Secretary of State", "fund": "0155", "org": "1600", "cat": "govt", "total": 1017140, "items": null}, {"n": 17, "name": "State Election Commission", "fund": "0160", "org": "1601", "cat": "govt", "total": 7508, "items": null}, {"n": 18, "name": "Dept. of Administration – Office of the Secretary", "fund": "0186", "org": "0201", "cat": "govt", "total": 16217155, "items": null}, {"n": 20, "name": "Division of Finance", "fund": "0203", "org": "0209", "cat": "govt", "total": 815592, "items": null}, {"n": 21, "name": "Division of General Services", "fund": "0230", "org": "0211", "cat": "govt", "total": 26369693, "items": null}, {"n": 22, "name": "Division of Purchasing", "fund": "0210", "org": "0213", "cat": "govt", "total": 1006206, "items": null}, {"n": 23, "name": "Travel Management", "fund": "0615", "org": "0215", "cat": "govt", "total": 1233337, "items": null}, {"n": 24, "name": "Commission on Uniform State Laws", "fund": "0214", "org": "0217", "cat": "govt", "total": 65550, "items": null}, {"n": 25, "name": "WV Public Employees Grievance Board", "fund": "0220", "org": "0219", "cat": "govt", "total": 1195326, "items": null}, {"n": 26, "name": "Ethics Commission", "fund": "0223", "org": "0220", "cat": "govt", "total": 676268, "items": null}, {"n": 27, "name": "Public Defender Services", "fund": "0226", "org": "0221", "cat": "legal", "total": 45408869, "items": [["Personal Services and Employee Benefits", "00100", 1987292], ["Salary/Benefits of Cabinet Secretary & Agency Heads", "00201", 119000], ["Unclassified", "09900", 313300], ["Current Expenses", "13000", 12740], ["Public Defender Corporations", "35200", 25274849], ["Appointed Counsel Fees", "78800", 17691113], ["BRIM Premium", "91300", 10575]]}, {"n": 28, "name": "Division of Personnel", "fund": "0206", "org": "0222", "cat": "govt", "total": 900000, "items": null}, {"n": 29, "name": "Committee for Purchase of Commodities/Svcs from the Handicapped", "fund": "0233", "org": "0224", "cat": "govt", "total": 4055, "items": null}, {"n": 30, "name": "WV Prosecuting Attorneys Institute", "fund": "0557", "org": "0228", "cat": "legal", "total": 690480, "items": null}, {"n": 31, "name": "Office of Technology", "fund": "0204", "org": "0231", "cat": "govt", "total": 7200000, "items": null}, {"n": 32, "name": "Real Estate Division", "fund": "0610", "org": "0233", "cat": "govt", "total": 874591, "items": null}, {"n": 33, "name": "Division of Forestry", "fund": "0250", "org": "0305", "cat": "commerce", "total": 6133391, "items": null}, {"n": 34, "name": "Geological and Economic Survey", "fund": "0253", "org": "0306", "cat": "envnr", "total": 3348289, "items": null}, {"n": 35, "name": "Division of Economic Development", "fund": "0256", "org": "0307", "cat": "commerce", "total": 11411152, "items": null}, {"n": 36, "name": "Office of Energy", "fund": "0612", "org": "0307", "cat": "commerce", "total": 1285603, "items": null}, {"n": 37, "name": "Division of Labor", "fund": "0260", "org": "0308", "cat": "commerce", "total": 1735294, "items": null}, {"n": 38, "name": "Division of Natural Resources", "fund": "0265", "org": "0310", "cat": "envnr", "total": 28683555, "items": [["Personal Services and Employee Benefits", "00100", 21367002], ["Salary/Benefits of Cabinet Secretary & Agency Heads", "00201", 113188], ["Repairs and Alterations", "06400", 100], ["Equipment", "07000", 100], ["Unclassified", "09900", 184711], ["Current Expenses", "13000", 449654], ["Buildings", "25800", 100], ["Capital Outlay – Parks", "28800", 3434945], ["Litter Control Conservation Officers", "56400", 157746], ["Upper Mud River Flood Control", "65400", 179084], ["Other Assets", "69000", 100], ["Land", "73000", 100], ["Law Enforcement", "80600", 2751584], ["BRIM Premium", "91300", 45141]]}, {"n": 39, "name": "Division of Miners' Health, Safety and Training", "fund": "0277", "org": "0314", "cat": "commerce", "total": 12236996, "items": null}, {"n": 40, "name": "Board of Coal Mine Health and Safety", "fund": "0280", "org": "0319", "cat": "commerce", "total": 356795, "items": null}, {"n": 41, "name": "WorkForce West Virginia", "fund": "0572", "org": "0323", "cat": "commerce", "total": 75700, "items": null}, {"n": 42, "name": "Department of Commerce – Office of the Secretary", "fund": "0606", "org": "0327", "cat": "commerce", "total": 2009979, "items": null}, {"n": 43, "name": "Division of Rehabilitation Services", "fund": "0310", "org": "0932", "cat": "commerce", "total": 16397112, "items": null}, {"n": 44, "name": "Department of Tourism – Office of the Secretary", "fund": "0246", "org": "0304", "cat": "commerce", "total": 21550000, "items": [["Tourism – Brand Promotion", "61803", 15000000], ["Tourism – Public Relations", "61804", 1500000], ["Tourism – Events and Sponsorships", "61805", 500000], ["Tourism – Industry Development", "61806", 3050000], ["State Parks and Recreation Advertising", "61900", 1500000]]}, {"n": 45, "name": "Division of Culture and History", "fund": "0293", "org": "0432", "cat": "commerce", "total": 8132165, "items": null}, {"n": 46, "name": "Library Commission", "fund": "0296", "org": "0432", "cat": "commerce", "total": 2961448, "items": null}, {"n": 47, "name": "Educational Broadcasting Commission", "fund": "0300", "org": "0439", "cat": "commerce", "total": 3872092, "items": null}, {"n": 48, "name": "State Board of Education – School Lunch Program", "fund": "0303", "org": "0402", "cat": "k12", "total": 2502069, "items": null}, {"n": 49, "name": "State Department of Education", "fund": "0313", "org": "0402", "cat": "k12", "total": 140137440, "items": [["Personal Services and Employee Benefits", "00100", 4983544], ["Teachers' Retirement Savings Realized", "09500", 39831000], ["Unclassified", "09900", 420000], ["Current Expenses", "13000", 3517816], ["Increased Enrollment", "14000", 13653041], ["Safe Schools", "14300", 7443900], ["Attendance Incentive Bonus", "15001", 2262389], ["National Teacher Certification", "16100", 100000], ["Jobs & Hope – Childhood Drug Prevention Education", "21901", 2000000], ["Technology Repair and Modernization", "29800", 951003], ["Hope Scholarship Program", "30401", 24610523], ["HVAC Technicians", "35500", 555872], ["Early Retirement Notification Incentive", "36600", 300000], ["MATH Program", "36800", 836532], ["Assessment Programs", "39600", 3750759], ["Governor's Honors Academy", "47800", 979853], ["English as a Second Language", "52800", 96000], ["Teacher Reimbursement", "57300", 297188], ["Hospitality Training", "60000", 281051], ["Youth in Government", "61600", 100000], ["High Acuity Special Needs", "63400", 2700000], ["Computer Science Education", "—", 2000000], ["Foreign Student Education", "63600", 102133], ["State Board of Education Administrative Costs", "68400", 200000], ["Early Literacy Program", "75600", 5724015], ["School Based Truancy Prevention", "78101", 2000000], ["Communities in Schools", "78103", 4912637], ["Mastery Based Education", "78104", 125000], ["Mountain State Digital Literacy Program", "86401", 1300000], ["21st Century Learners", "88600", 1675127], ["BRIM Premium", "91300", 342859], ["Allowance for Extraordinary Sustained Growth", "94300", 71980], ["21st Century Assessment and Professional Development", "93100", 2015254], ["21st Century Technology Infrastructure Network Tools & Support", "93300", 9256714], ["Special Olympic Games", "96600", 25000], ["Educational Program Allowance", "99600", 716250]]}, {"n": 50, "name": "State Board of Education – Aid for Exceptional Children", "fund": "0314", "org": "0402", "cat": "k12", "total": 35942710, "items": [["Special Education – Counties", "15900", 7425757], ["Special Education – Institutions", "16000", 4397051], ["Education of Juveniles in Predispositional Detention", "30200", 766204], ["Education of Institutionalized Juveniles and Adults", "47200", 23353698]]}, {"n": 51, "name": "State Board of Education – State Aid to Schools (funding formula)", "fund": "0317", "org": "0402", "cat": "k12", "total": 2018915542, "items": [["Other Current Expenses", "02200", 197669392], ["Advanced Placement", "05300", 825149], ["Professional Educators", "15100", 956210509], ["Service Personnel", "15200", 399892987], ["Fixed Charges", "15300", 117003609], ["Transportation", "15400", 100315326], ["Improved Instructional Programs", "15600", 63626561], ["Professional Student Support Services", "65500", 65568543], ["21st Century Strategic Technology Learning Growth", "93600", 49747886], ["Teacher and Leader Induction", "93601", 28783005], ["Less: Local Share", "—", -566787626], ["Adjustments", "—", -3422328], ["Public Employees' Insurance Matching (PEIA – school employees)", "01200", 317566529], ["Teachers' Retirement System", "01900", 68086596], ["Retirement Systems – Unfunded Liability", "77500", 223829404]]}, {"n": 52, "name": "State Board of Education – Vocational Division", "fund": "0390", "org": "0402", "cat": "k12", "total": 38568594, "items": null}, {"n": 53, "name": "State Board of Education – Schools for the Deaf and the Blind", "fund": "0320", "org": "0403", "cat": "k12", "total": 14528499, "items": null}, {"n": 54, "name": "State Board of Education – School Building Authority", "fund": "0318", "org": "0404", "cat": "k12", "total": 24000000, "items": null}, {"n": 55, "name": "Environmental Quality Board", "fund": "0270", "org": "0311", "cat": "envnr", "total": 132912, "items": null}, {"n": 56, "name": "Division of Environmental Protection", "fund": "0273", "org": "0313", "cat": "envnr", "total": 7705500, "items": null}, {"n": 57, "name": "Air Quality Board", "fund": "0550", "org": "0325", "cat": "envnr", "total": 76897, "items": null}, {"n": 58, "name": "Department of Health – Central Office", "fund": "0407", "org": "0506", "cat": "pubhealth", "total": 9273614, "items": null}, {"n": 59, "name": "Department of Health – Office of Shared Administration", "fund": "0404", "org": "0506", "cat": "pubhealth", "total": 5615277, "items": null}, {"n": 60, "name": "Bureau for Public Health – Office of the Commissioner", "fund": "0405", "org": "0506", "cat": "pubhealth", "total": 3853918, "items": null}, {"n": 61, "name": "Bureau for Public Health – Health Statistics Center", "fund": "0406", "org": "0506", "cat": "pubhealth", "total": 615586, "items": null}, {"n": 62, "name": "Bureau for Public Health – Community Health & Health Promotion", "fund": "0438", "org": "0506", "cat": "pubhealth", "total": 8163064, "items": [["Black Lung Clinics", "46700", 170885], ["Primary Care Support", "62800", 2032635], ["Health Right Free Clinics", "72700", 5250000], ["Healthy Lifestyles", "77800", 612419], ["Diabetes Education and Prevention", "87300", 97125]]}, {"n": 63, "name": "Bureau for Public Health – Environmental Health Services", "fund": "0417", "org": "0506", "cat": "pubhealth", "total": 3171119, "items": null}, {"n": 64, "name": "Bureau for Public Health – Epidemiology and Prevention", "fund": "0418", "org": "0506", "cat": "pubhealth", "total": 2862551, "items": null}, {"n": 65, "name": "Bureau for Public Health – Laboratory Services", "fund": "0419", "org": "0506", "cat": "pubhealth", "total": 3775633, "items": null}, {"n": 66, "name": "Bureau for Public Health – Children's Specialty Care", "fund": "0421", "org": "0506", "cat": "pubhealth", "total": 1667975, "items": null}, {"n": 67, "name": "Bureau for Public Health – Infant, Child & Adolescent Health", "fund": "0422", "org": "0506", "cat": "pubhealth", "total": 2030040, "items": null}, {"n": 68, "name": "Bureau for Public Health – Maternal/Child/Family Health Epi", "fund": "0423", "org": "0506", "cat": "pubhealth", "total": 464714, "items": null}, {"n": 69, "name": "Bureau for Public Health – Community Health (Maternal/Child)", "fund": "0424", "org": "0506", "cat": "pubhealth", "total": 429832, "items": null}, {"n": 70, "name": "Bureau for Public Health – Women's and Family Health", "fund": "0425", "org": "0506", "cat": "pubhealth", "total": 2556146, "items": null}, {"n": 71, "name": "Bureau for Public Health – WV Birth to Three", "fund": "0426", "org": "0506", "cat": "pubhealth", "total": 17156198, "items": null}, {"n": 72, "name": "Bureau for Public Health – Office of Medical Cannabis", "fund": "0427", "org": "0506", "cat": "pubhealth", "total": 1137238, "items": null}, {"n": 73, "name": "Bureau for Public Health – Office of Nutrition Services (WIC)", "fund": "0428", "org": "0506", "cat": "pubhealth", "total": 38621, "items": null}, {"n": 74, "name": "Deaf and Hard of Hearing", "fund": "0429", "org": "0506", "cat": "pubhealth", "total": 241270, "items": null}, {"n": 75, "name": "Center for Local Health (Local/Basic Public Health)", "fund": "0431", "org": "0506", "cat": "pubhealth", "total": 19038864, "items": null}, {"n": 76, "name": "Office of Chief Medical Examiner", "fund": "0432", "org": "0506", "cat": "pubhealth", "total": 14071667, "items": null}, {"n": 77, "name": "Office of Emergency Medical Services", "fund": "0434", "org": "0506", "cat": "pubhealth", "total": 5369509, "items": [["Statewide EMS Program Support", "38300", 1681427], ["State Trauma and Emergency Care System", "91800", 1975140], ["WVU Charleston Poison Control Hotline", "94400", 712942], ["Telestroke", "30010", 1000000]]}, {"n": 78, "name": "Office of Threat Preparedness", "fund": "0435", "org": "0506", "cat": "pubhealth", "total": 5595, "items": null}, {"n": 79, "name": "Human Rights Commission", "fund": "0416", "org": "0510", "cat": "govt", "total": 1578779, "items": null}, {"n": 80, "name": "Office of the Inspector General", "fund": "0437", "org": "0513", "cat": "pubhealth", "total": 7802841, "items": null}, {"n": 81, "name": "Division of Human Services", "fund": "0403", "org": "0511", "cat": "human", "total": 177093557, "items": [["Personal Services and Employee Benefits", "00100", 32219482], ["Salary/Benefits of Cabinet Secretary & Agency Heads", "00201", 162850], ["Unclassified", "09900", 5632055], ["Current Expenses", "13000", 6113150], ["Child Care Development", "14400", 3167767], ["Jobs & Hope", "14902", 2357000], ["Social Services", "19500", 46136], ["Behavioral Health Program", "21900", 64469814], ["Family Resource Networks", "27400", 1762464], ["Substance Abuse Continuum of Care", "35400", 1821600], ["Office of Drug Control Policy", "35401", 592652], ["James 'Tiger' Morton Catastrophic Illness Fund", "45500", 377544], ["In-Home Family Education", "68800", 1100000], ["WV Works Separate State Program", "69800", 1519650], ["Child Support Enforcement", "70500", 7236632], ["TANF / Maintenance of Effort", "70700", 25819096], ["Child Care – Maintenance of Effort Match", "70800", 5693743], ["Capital Outlay and Maintenance", "75500", 11875], ["Medical Services Administrative Costs", "78900", 98472], ["Indigent Burials", "85100", 1550000], ["CHIP Administrative Costs", "85601", 706386], ["CHIP Services", "85602", 13469298], ["BRIM Premium", "91300", 945891], ["Children's Trust Fund – Transfer", "95100", 220000]]}, {"n": 82, "name": "Dept. of Human Services – Office of Shared Administration", "fund": "0481", "org": "0511", "cat": "human", "total": 25830599, "items": [["Personal Services and Employee Benefits", "00100", 10709072], ["Unclassified", "09900", 252842], ["Current Expenses", "13000", 7500296], ["PATH", "95400", 7368389]]}, {"n": 83, "name": "Bureau for Medical Services – Office of the Commissioner", "fund": "0482", "org": "0511", "cat": "medicaid", "total": 894295, "items": null}, {"n": 84, "name": "Bureau for Medical Services – Medical Services Administration", "fund": "0483", "org": "0511", "cat": "medicaid", "total": 47126983, "items": [["Personal Services and Employee Benefits", "00100", 9658], ["Current Expenses", "13000", 1175], ["Medical Services Administrative Costs", "78900", 47116150]]}, {"n": 85, "name": "Bureau for Medical Services – Policy and Programming (Medicaid)", "fund": "0484", "org": "0511", "cat": "medicaid", "total": 256650203, "items": [["Medical Services", "18900", 79174335], ["WV Teaching Hospitals Tertiary/Safety Net", "54700", 6356000], ["Rural Hospitals Under 150 Beds", "94000", 2596000], ["Case Management", "30012", 123264], ["Chiropractic Services", "30013", 5784], ["Clinic Services", "30014", 160523], ["Dental Services", "30015", 184878], ["Diagnostic, Screening, Preventive & Rehab Services", "30016", 3529], ["Health Homes (Chronic Conditions)", "30017", 141477], ["Hospice", "30018", 1554214], ["Institution for Mental Disease Services", "30019", 1418872], ["Intermediate Care Facility Services", "30020", 3592852], ["Managed Care Organizations", "30021", 126104299], ["Prescription Drugs", "30022", 21934109], ["Physical and Occupational Therapy", "30023", 76436], ["Podiatry, Optometry and Prosthetics", "30024", 34531], ["Private Duty Nurses & Personal Care", "30025", 13163660], ["Respiratory Care Services", "30026", 11203], ["Speech, Hearing, and Language Disorders", "30027", 14237]]}, {"n": 86, "name": "Bureau for Medical Services – Home & Community Based Waivers", "fund": "0485", "org": "0511", "cat": "medicaid", "total": 157528384, "items": [["I/DD Waiver", "46600", 108541736], ["Title XIX for Senior Citizens", "53300", 47060282], ["Traumatic Brain Injury Waiver", "83500", 1000000], ["Substance Use Disorder Waiver", "30028", 926366]]}, {"n": 87, "name": "Bureau for Social Services – Office of the Commissioner", "fund": "0486", "org": "0511", "cat": "human", "total": 29033302, "items": [["Personal Services and Employee Benefits", "00100", 9541782], ["Current Expenses", "13000", 2272246], ["Social Services", "19500", 7793934], ["Domestic Violence Legal Services Fund", "38400", 400000], ["Child Protective Services Case Workers", "46800", 6525340], ["Grants for Licensed Domestic Violence Programs & Prevention", "75000", 2500000]]}, {"n": 88, "name": "Bureau for Social Services – Children's Services", "fund": "0487", "org": "0511", "cat": "human", "total": 43092266, "items": [["Social Services", "19500", 41525266], ["Family Preservation Program", "19600", 1565000], ["Current Expenses", "13000", 2000]]}, {"n": 89, "name": "Bureau for Social Services – Adoption", "fund": "0488", "org": "0511", "cat": "human", "total": 74283410, "items": null}, {"n": 90, "name": "Bureau for Social Services – Foster Care", "fund": "0489", "org": "0511", "cat": "human", "total": 174966649, "items": null}, {"n": 91, "name": "Bureau for Social Services – Adult Services", "fund": "0492", "org": "0511", "cat": "human", "total": 6056125, "items": null}, {"n": 92, "name": "Bureau for Social Services – CPS Case Workers", "fund": "0493", "org": "0511", "cat": "human", "total": 30121784, "items": [["Social Services", "19500", 5157339], ["Child Protective Services Case Workers", "46800", 24964445]]}, {"n": 93, "name": "Bureau for Social Services – Social Service Case Workers", "fund": "0494", "org": "0511", "cat": "human", "total": 12674794, "items": null}, {"n": 94, "name": "Bureau for Social Services – Adult Protective Services Case Workers", "fund": "0495", "org": "0511", "cat": "human", "total": 5133918, "items": null}, {"n": 95, "name": "Bureau for Social Services – Youth Service Case Workers", "fund": "0496", "org": "0511", "cat": "human", "total": 5845579, "items": null}, {"n": 96, "name": "Health Facilities – Central Office", "fund": "0401", "org": "0512", "cat": "hospitals", "total": 3243175, "items": null}, {"n": 97, "name": "Health Facilities – Capital Projects Fund", "fund": "0402", "org": "0512", "cat": "hospitals", "total": 550000, "items": null}, {"n": 98, "name": "Health Facilities – Hopemont Hospital", "fund": "0408", "org": "0512", "cat": "hospitals", "total": 12771108, "items": null}, {"n": 99, "name": "Health Facilities – Lakin Hospital", "fund": "0409", "org": "0512", "cat": "hospitals", "total": 14553801, "items": null}, {"n": 100, "name": "Health Facilities – John Manchin Sr. Health Care Center", "fund": "0410", "org": "0512", "cat": "hospitals", "total": 8719666, "items": null}, {"n": 101, "name": "Health Facilities – Jackie Withrow Hospital", "fund": "0411", "org": "0512", "cat": "hospitals", "total": 12274374, "items": null}, {"n": 102, "name": "Health Facilities – Welch Community Hospital", "fund": "0412", "org": "0512", "cat": "hospitals", "total": 29270706, "items": [["Personal Services and Employee Benefits", "00100", 13295716], ["Repairs and Alterations", "06400", 1], ["Equipment", "07000", 1], ["Current Expenses", "13000", 15525686], ["Buildings", "25800", 1], ["Other Assets", "69000", 1], ["Contract Nursing", "72301", 250000], ["Capital Outlay and Maintenance", "75500", 50000], ["BRIM Premium", "91300", 149300]]}, {"n": 103, "name": "Health Facilities – William R. Sharpe Jr. Hospital", "fund": "0413", "org": "0512", "cat": "hospitals", "total": 81350260, "items": [["Personal Services and Employee Benefits", "00100", 28384787], ["Repairs and Alterations", "06400", 350001], ["Equipment", "07000", 1], ["Current Expenses", "13000", 10280300], ["Buildings", "25800", 1], ["Other Assets", "69000", 1], ["Contract Nursing", "72301", 41969835], ["Capital Outlay and Maintenance", "75500", 50000], ["BRIM Premium", "91300", 315334]]}, {"n": 104, "name": "Health Facilities – Mildred Mitchell-Bateman Hospital", "fund": "0414", "org": "0512", "cat": "hospitals", "total": 54537994, "items": [["Personal Services and Employee Benefits", "00100", 25979665], ["Repairs and Alterations", "06400", 300001], ["Equipment", "07000", 1], ["Current Expenses", "13000", 2967683], ["Buildings", "25800", 1], ["Other Assets", "69000", 1], ["Contract Nursing", "72301", 24957520], ["Capital Outlay and Maintenance", "75500", 50000], ["BRIM Premium", "91300", 283122]]}, {"n": 105, "name": "Health Facilities – Sharpe Jr. Transitional Living Facility", "fund": "0415", "org": "0512", "cat": "hospitals", "total": 1863931, "items": null}, {"n": 106, "name": "Dept. of Homeland Security – Office of the Secretary", "fund": "0430", "org": "0601", "cat": "safety", "total": 4331689, "items": null}, {"n": 107, "name": "Division of Emergency Management", "fund": "0443", "org": "0606", "cat": "safety", "total": 7070617, "items": null}, {"n": 108, "name": "Corrections & Rehabilitation – WV Parole Board", "fund": "0440", "org": "0608", "cat": "safety", "total": 1362351, "items": null}, {"n": 109, "name": "Corrections & Rehabilitation – Central Office", "fund": "0446", "org": "0608", "cat": "safety", "total": 388014, "items": null}, {"n": 110, "name": "Corrections & Rehabilitation – Correctional Units", "fund": "0450", "org": "0608", "cat": "safety", "total": 354622611, "items": [["Employee Benefits", "01000", 1258136], ["Children's Protection Act", "09000", 838437], ["Unclassified", "09900", 1578800], ["Current Expenses", "13000", 57690483], ["Facilities Planning and Administration", "38600", 1274200], ["Charleston Correctional Center", "45600", 4292171], ["Beckley Correctional Center", "49000", 3373622], ["Anthony Correctional Center", "50400", 6944138], ["Huttonsville Correctional Center", "51400", 23315435], ["Northern Correctional Center", "53400", 10321311], ["Inmate Medical Expenses", "53500", 66370483], ["Pruntytown Correctional Center", "54300", 11167934], ["Corrections Academy", "56900", 2342458], ["Information Technology Services", "59901", 2759052], ["Martinsburg Correctional Center", "66300", 5838595], ["Parole Services", "68600", 7712380], ["Special Services", "68700", 7470058], ["Directed Transfer (Regional Jails)", "70000", 20759291], ["Investigative Services", "71600", 3925268], ["Capital Outlay and Maintenance", "75500", 2000000], ["Salem Correctional Center", "77400", 13930445], ["McDowell County Correctional Center", "79000", 2542590], ["Stevens Correctional Center", "79100", 14348351], ["Parkersburg Correctional Center", "82800", 8570354], ["St. Mary's Correctional Center", "88100", 18735467], ["Denmar Correctional Center", "88200", 6619382], ["Ohio County Correctional Center", "88300", 2868233], ["Mt. Olive Correctional Complex", "88800", 29202306], ["Lakin Correctional Center", "89600", 14045574], ["BRIM Premium", "91300", 2527657]]}, {"n": 111, "name": "Corrections & Rehabilitation – Bureau of Juvenile Services", "fund": "0570", "org": "0608", "cat": "safety", "total": 57471207, "items": [["Statewide Reporting Centers", "26200", 7954237], ["Robert L. Shell Juvenile Center", "26700", 3353727], ["Resident Medical Expenses", "53501", 6000078], ["Central Office", "70100", 2157860], ["Capital Outlay and Maintenance", "75500", 250000], ["Gene Spadaro Juvenile Center", "79300", 3582637], ["BRIM Premium", "91300", 115967], ["Kenneth Honey Rubenstein Juvenile Center", "98000", 7045294], ["Vicki Douglas Juvenile Center", "98100", 3451194], ["Northern Regional Juvenile Center", "98200", 2876302], ["Lorrie Yeager Jr. Juvenile Center", "98300", 3300206], ["Sam Perdue Juvenile Center", "98400", 3487390], ["Tiger Morton Center", "98500", 3572552], ["Donald R. Kuhn Juvenile Center", "98600", 6826359], ["J.M. 'Chick' Buckbee Juvenile Center", "98700", 3497404]]}, {"n": 112, "name": "West Virginia State Police", "fund": "0453", "org": "0612", "cat": "safety", "total": 116490801, "items": [["Personal Services and Employee Benefits", "00100", 77180392], ["Salary/Benefits of Cabinet Secretary & Agency Heads", "00201", 139300], ["Repairs and Alterations", "06400", 450523], ["Children's Protection Act", "09000", 1127989], ["Current Expenses", "13000", 10384394], ["Trooper Class", "52100", 3227388], ["Barracks Lease Payments", "55600", 237898], ["Communications and Other Equipment", "55800", 1070968], ["Trooper Retirement Fund", "60500", 14319315], ["Handgun Administration Expense", "74700", 89432], ["Capital Outlay and Maintenance", "75500", 250000], ["Retirement Systems – Unfunded Liability", "77500", 1], ["Automated Fingerprint Identification System", "89800", 2269280], ["BRIM Premium", "91300", 5743921]]}, {"n": 113, "name": "Fire Commission", "fund": "0436", "org": "0619", "cat": "safety", "total": 63061, "items": null}, {"n": 114, "name": "Division of Protective Services", "fund": "0585", "org": "0622", "cat": "safety", "total": 4017021, "items": null}, {"n": 115, "name": "Division of Administrative Services – Criminal Justice Fund", "fund": "0546", "org": "0623", "cat": "safety", "total": 24718376, "items": [["Personal Services and Employee Benefits", "00100", 723413], ["Repairs and Alterations", "06400", 1804], ["Current Expenses", "13000", 133360], ["Victims of Crime Act", "21601", 12966931], ["Court Appointed Special Advocates", "—", 1100000], ["Child Advocacy Centers", "45800", 2216336], ["Community Corrections", "56100", 4616145], ["Statistical Analysis Program", "59700", 51495], ["Sexual Assault Forensic Examination Commission", "71400", 285570], ["Qualitative Analysis & Training for Youth Services", "76200", 91479], ["Law Enforcement Professional Standards", "83800", 183676], ["Justice Reinvestment Initiative", "89501", 2346044], ["BRIM Premium", "91300", 2123]]}, {"n": 116, "name": "Division of Administrative Services", "fund": "0619", "org": "0623", "cat": "safety", "total": 6013574, "items": null}, {"n": 117, "name": "Department of Revenue – Office of the Secretary", "fund": "0465", "org": "0701", "cat": "govt", "total": 34345056, "items": [["Personal Services and Employee Benefits", "00100", 395153], ["Salary/Benefits of Cabinet Secretary & Agency Heads", "00201", 169820], ["Repairs and Alterations", "06400", 1262], ["Equipment", "07000", 8000], ["Unclassified", "09900", 437], ["Current Expenses", "13000", 81594], ["Other Assets", "69000", 500], ["Directed Transfer → Personal Income Tax Reserve Fund", "70000", 33688290]]}, {"n": 118, "name": "Tax Division", "fund": "0470", "org": "0702", "cat": "govt", "total": 31812660, "items": null}, {"n": 119, "name": "State Budget Office", "fund": "0595", "org": "0703", "cat": "govt", "total": 1143279, "items": null}, {"n": 120, "name": "WV Office of Tax Appeals", "fund": "0593", "org": "0709", "cat": "govt", "total": 1236442, "items": null}, {"n": 121, "name": "State Athletic Commission", "fund": "0523", "org": "0933", "cat": "govt", "total": 36811, "items": null}, {"n": 122, "name": "Multimodal Transportation – State Rail Authority", "fund": "0506", "org": "0810", "cat": "transport", "total": 2150057, "items": null}, {"n": 123, "name": "Multimodal Transportation – Public Transit", "fund": "0510", "org": "0810", "cat": "transport", "total": 3542989, "items": null}, {"n": 124, "name": "Multimodal Transportation Facilities", "fund": "0580", "org": "0810", "cat": "transport", "total": 1381063, "items": null}, {"n": 125, "name": "Multimodal Transportation – Aeronautics Commission", "fund": "0582", "org": "0810", "cat": "transport", "total": 2034486, "items": null}, {"n": 126, "name": "Department of Veterans' Assistance", "fund": "0456", "org": "0613", "cat": "veterans", "total": 15929515, "items": [["Personal Services and Employee Benefits", "00100", 2696166], ["Salary/Benefits of Cabinet Secretary & Agency Heads", "00201", 110880], ["Repairs and Alterations", "06400", 5000], ["Unclassified", "09900", 20000], ["Current Expenses", "13000", 236450], ["Veterans' Field Offices", "22800", 585550], ["Veterans' Nursing Home", "28600", 11443175], ["Veterans' Toll Free Assistance Line", "32800", 2015], ["Veterans' Reeducation Assistance", "32900", 10000], ["Veterans' Grant Program", "34200", 335000], ["Veterans' Grave Markers", "47300", 10000], ["Veterans' Cemetery", "80800", 425279], ["BRIM Premium", "91300", 50000]]}, {"n": 127, "name": "Department of Veterans' Assistance – Veterans' Home", "fund": "0460", "org": "0618", "cat": "veterans", "total": 1914239, "items": null}, {"n": 128, "name": "Bureau of Senior Services", "fund": "0420", "org": "0508", "cat": "veterans", "total": 6580366, "items": null}, {"n": 129, "name": "WV Council for Community & Technical College Education", "fund": "0596", "org": "0420", "cat": "highered", "total": 14846467, "items": [["WV Council for Community and Technical Education", "39200", 766404], ["Community College Workforce Development", "87800", 2791367], ["College Transition Program", "88700", 278222], ["WV Advance Workforce Development", "89300", 3126336], ["Technical Program Development", "89400", 1800735], ["WV Invests Grant Program", "89401", 5049753], ["Skilled Trades Apprenticeship Nontraditional Degree", "—", 1033650]]}, {"n": 130, "name": "Mountwest Community and Technical College", "fund": "0599", "org": "0444", "cat": "highered", "total": 7070248, "items": null}, {"n": 131, "name": "New River Community and Technical College", "fund": "0600", "org": "0445", "cat": "highered", "total": 6900124, "items": null}, {"n": 132, "name": "Pierpont Community and Technical College", "fund": "0597", "org": "0446", "cat": "highered", "total": 8461049, "items": null}, {"n": 133, "name": "Blue Ridge Community and Technical College", "fund": "0601", "org": "0447", "cat": "highered", "total": 9545266, "items": null}, {"n": 134, "name": "West Virginia University at Parkersburg", "fund": "0351", "org": "0464", "cat": "highered", "total": 11816395, "items": null}, {"n": 135, "name": "Southern WV Community and Technical College", "fund": "0380", "org": "0487", "cat": "highered", "total": 9459029, "items": null}, {"n": 136, "name": "WV Northern Community and Technical College", "fund": "0383", "org": "0489", "cat": "highered", "total": 8672018, "items": null}, {"n": 137, "name": "Eastern WV Community and Technical College", "fund": "0587", "org": "0492", "cat": "highered", "total": 2439405, "items": null}, {"n": 138, "name": "BridgeValley Community and Technical College", "fund": "0618", "org": "0493", "cat": "highered", "total": 8931983, "items": null}, {"n": 139, "name": "Higher Education Policy Commission – Administration", "fund": "0589", "org": "0441", "cat": "highered", "total": 81716649, "items": [["Personal Services and Employee Benefits", "00100", 2945386], ["RHI/RHEP Program Administration", "03700", 80000], ["Mental Health Provider Loan Repayment", "11301", 100000], ["Current Expenses", "13000", 1096902], ["Higher Education Grant Program", "16400", 40619864], ["Tuition Contract Program", "16500", 1533917], ["Underwood-Smith Scholarship – Student Awards", "16700", 1478349], ["Facilities Planning and Administration", "38600", 1760254], ["Dual Enrollment Program", "42201", 5810625], ["Higher Education System Initiatives", "48801", 1655725], ["PROMISE Scholarship – Transfer", "80000", 18500000], ["HEAPS Grant Program", "86700", 5026840], ["Health Professionals' Student Loan Program", "86701", 547470], ["Directed Transfer", "70000", 293500], ["WVU College of Law", "—", 250000], ["BRIM Premium", "91300", 17817]]}], "tracked": 4988350065, "ndetail": 31, "nline": 323, "peia": {"plan_fy27": 1265477108, "reserve_fy27": 172742794, "state_reserve_fy27": 142942188, "state_reserve_pct": 13.8, "plan_fy28": 1431362952, "school_match": 317566529, "rate": [["FY2026", "State employees", "+14%"], ["FY2026", "Local-gov employees", "+16%"], ["FY2026", "Retirees", "+12%"], ["FY2027", "All groups (aggregate)", "+3%"]], "facts": ["PEIA is West Virginia's self-insured health plan for active state employees, county school employees, college/university staff, participating local governments, and retirees. It splits into a State Fund and an Active Local Fund.", "Projected plan spending is about $1.27B in FY2027, rising to roughly $1.43B in FY2028 (PEIA actuary, FY2025–2029 plan). Roughly 96.7% of revenue goes straight to claims and capitation — overhead is low.", "In THIS budget bill, the only line that names PEIA is the $317.6M 'Public Employees' Insurance Matching' inside State Aid to Schools — the state's General Revenue share for school employees. Every other agency's PEIA employer cost is folded into its 'Personal Services and Employee Benefits' line and is not itemized.", "Cost split is fixed by statute (SB 268, 2022): employers pay 80% and employees 20% in-state (70/30 for distant out-of-state care). SB 268 also set hospital reimbursement at a minimum of 110% of Medicare (~$70M more to providers) and tied the spousal surcharge to the full actuarial value of covering a spouse.", "FY2026 hit members hard: +14% premiums for state employees, +16% for local-gov employees, +12% for retirees, out-of-pocket maximums up 40%, and the monthly spousal surcharge doubled from $147 to $350.", "FY2027 (approved Dec 4, 2025; effective July 1, 2026) is gentler at +3% across the board — but the average family spousal surcharge rises another ~$200/month, and the retiree PAYGO transfer jumps from $10M to $55M.", "The State Fund reserve is projected near $142.9M for FY2027 (~13.8% of spending) — at the actuarial floor, not above it. There is little cushion against a bad claims year."], "concern": "The Finance Board can only set premiums; it cannot fix the structural gap. A 2018–2022 rate freeze let costs outrun revenue, forcing the recent double-digit catch-up increases, and prescription/GLP-1 inflation keeps pushing spending up. Absent a permanent legislative funding source for the employer share, the burden keeps shifting onto employees and retirees. The school-employee share alone ($317.6M) is the 4th-largest single line in the entire General Revenue budget — and it is the only PEIA cost the bill lets you actually see."}, "concerns": [{"t": "$33.7M parked in a reserve while programs stay flat", "amt": "$33,688,290", "unit": "Dept. of Revenue – Office of the Secretary (Directed Transfer, code 70000)", "why": "A 'Directed Transfer' routes $33.7M of General Revenue into the Personal Income Tax Reserve Fund — money the Legislature can pull back at will. Set-asides build flexibility, but parking funds while child care, Jobs & Hope, and other lines are squeezed is a policy choice worth naming."}, {"t": "State hospitals run on costly contract nursing", "amt": "$67.2M", "unit": "Sharpe ($42.0M) + Bateman ($25.0M) contract nursing (code 72301)", "why": "At Sharpe Hospital, Contract Nursing ($42.0M) exceeds the entire Personal Services payroll ($28.4M); Bateman spends $25.0M more. Heavy reliance on agency staffing is a symptom of a hiring and retention crisis and costs far more per nurse than permanent staff."}, {"t": "Inmate and resident medical care is a major, rising cost", "amt": "$72.4M", "unit": "Corrections Inmate Medical ($66.4M) + Juvenile Resident Medical ($6.0M)", "why": "Inmate Medical Expenses are the single largest line in the $354.6M Correctional Units budget. Health costs for incarcerated people grow with the population's age and acuity and are largely non-discretionary once people are in custody."}, {"t": "Hope Scholarship is scaling fast inside the school budget", "amt": "$24,610,523", "unit": "State Department of Education – Hope Scholarship Program (code 30401)", "why": "The education-savings-account program now draws $24.6M from General Revenue. With eligibility broadening toward universal, this line is on a steep growth path that competes directly with the public-school funding formula."}, {"t": "Child welfare spending reflects a crisis, not efficiency", "amt": "$294.3M", "unit": "Foster Care ($175.0M) + Adoption ($74.3M) + CPS/Social-service caseworkers (~$45M)", "why": "West Virginia has one of the nation's highest rates of children in foster care. The combined spend is large and growing — the dollars are a measure of how many kids are in the system, so the goal is fewer children needing it, not just more funding."}, {"t": "'$1' placeholder appropriations hide real capital needs", "amt": "dozens of $1 lines", "unit": "Buildings / Land / Other Assets across many agencies (e.g., codes 25800, 73000, 69000)", "why": "Many capital lines are funded at exactly $1. The token keeps the line legally 'open' but reports almost no money against real building, land, and equipment needs — masking deferred maintenance and capital backlogs across state facilities."}, {"t": "Jobs & Hope is fragmented across two budgets", "amt": "$5.86M", "unit": "Human Services Jobs & Hope ($2.36M) + Education Vocational Jobs & Hope ($3.50M)", "why": "The recovery-to-workforce program is split between agencies and was reshaped in this cycle. Spreading a signature program across line items makes its true funding level and outcomes harder for the public to track."}, {"t": "Medicaid runs mostly through managed-care companies", "amt": "$126,104,299", "unit": "Bureau for Medical Services – Managed Care Organizations (code 30021)", "why": "Within Medicaid Policy & Programming, the largest single payment is the capitation to Managed Care Organizations. Concentrating Medicaid dollars in MCO contracts shifts both cost control and care decisions to private plans — worth close oversight."}, {"t": "'Reappropriated' balances roll forward out of view", "amt": "pervasive '(R)' lines", "unit": "Many appropriations flagged '(R)' across the bill", "why": "An '(R)' lets unspent money carry into the next year. It is normal practice, but it means a line's appropriation can differ sharply from what is actually spent — and the bill alone won't show you the gap. Actuals live in the Operating Detail, which this view does not yet include."}], "sources": [["FY2026 enacted line items", "Enrolled CS for HB 2026 (2025 Regular Session), Title II §1", "https://budget.wv.gov/approvedbudget/Documents/hb2026%20sub1%20enr.pdf"], ["PEIA FY2027 plan", "WV Watch / WVPB / The Intelligencer (Dec 4, 2025 Finance Board approval)", "https://westvirginiawatch.com/2025/12/04/peia-board-approves-3-rate-increases-for-2027/"], ["PEIA financials", "PEIA Finance Board actuarial plan FY2025–2029 (CCRC/Continuing Care Actuaries)", "https://peia.wv.gov/financial_reports"], ["PEIA statute", "SB 268 (2022) — 80/20 split, 110% of Medicare, spousal surcharge", "https://www.wvlegislature.gov/"]]};
+const $=(s,el=document)=>el.querySelector(s);
+const money=n=>(n<0?'($'+Math.abs(n).toLocaleString('en-US')+')':'$'+n.toLocaleString('en-US'));
+const short=n=>{const a=Math.abs(n);let s;if(a>=1e9)s='$'+(n/1e9).toFixed(2)+'B';else if(a>=1e6)s='$'+(n/1e6).toFixed(1)+'M';else if(a>=1e3)s='$'+Math.round(n/1e3)+'K';else s='$'+n;return s;};
+
+// stats
+$('#stats').innerHTML=[
+ [short(DATA.tracked),'Tracked in this view'],
+ [DATA.units.length.toString(),'Spending units'],
+ [DATA.nline.toLocaleString(),'Line items shown']
+].map(([n,l])=>`<div class="stat"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+
+// categories
+function catList(){const m={};DATA.units.forEach(u=>{(m[u.cat]??=({key:u.cat,label:DATA.cats[u.cat],total:0,count:0}));m[u.cat].total+=u.total;m[u.cat].count++;});return Object.values(m).sort((a,b)=>b.total-a.total);}
+const CATS=catList(), CMAX=Math.max(...CATS.map(c=>c.total));
+let activeCat=null,term='',sortBy='amt';
+
+$('#cats').innerHTML=CATS.map(c=>`<button class="catrow" data-cat="${c.key}">
+  <div class="top"><span class="cl">${c.label}</span>
+  <span class="cv">${money(c.total)}<span class="pct">${(c.total/DATA.tracked*100).toFixed(1)}% · ${c.count} units</span></span></div>
+  <div class="track"><span style="width:${(c.total/CMAX*100).toFixed(2)}%"></span></div></button>`).join('');
+
+// chips
+function renderChips(){
+  const all=`<button class="chip ${activeCat===null?'active':''}" data-cat="">All categories</button>`;
+  $('#chips').innerHTML=all+CATS.map(c=>`<button class="chip ${activeCat===c.key?'active':''}" data-cat="${c.key}">${c.label}</button>`).join('');
+}
+
+// ledger
+function liRow(it){
+  const [nm,code,amt]=it, neg=amt<0, isPeia=/PEIA/.test(nm);
+  return `<div class="li ${neg?'neg':''} ${isPeia?'peia':''}"><span class="lnm">${nm}</span><span class="dots"></span>${code&&code!=='—'?`<span class="lcode">${code}</span>`:''}<span class="lamt">${money(amt)}</span></div>`;
+}
+function unitBody(u){
+  if(!u.items) return `<div class="body"><p class="nodetail">Line-item detail for this unit is added in the full build.</p></div>`;
+  const sum=u.items.reduce((a,[,,v])=>a+v,0), ok=sum===u.total;
+  return `<div class="body">${u.items.map(liRow).join('')}
+    <div class="chkrow"><span class="ck ${ok?'':'bad'}">${ok?'✓ Line items sum to the bill total':'⚠ does not reconcile'}</span><span class="ctot">${money(u.total)}</span></div></div>`;
+}
+function renderLedger(){
+  let list=DATA.units.filter(u=>(!activeCat||u.cat===activeCat));
+  if(term){const t=term.toLowerCase();list=list.filter(u=>u.name.toLowerCase().includes(t)||(u.items&&u.items.some(i=>i[0].toLowerCase().includes(t)))||(u.fund+u.org).includes(t));}
+  if(sortBy==='amt')list.sort((a,b)=>b.total-a.total);
+  else if(sortBy==='az')list.sort((a,b)=>a.name.localeCompare(b.name));
+  else list.sort((a,b)=>DATA.cats[a.cat].localeCompare(DATA.cats[b.cat])||b.total-a.total);
+  $('#ledger').innerHTML=list.map(u=>`<div class="unit" data-n="${u.n}">
+    <button class="uhead" aria-expanded="false">
+      <span class="car">▶</span>
+      <span><span class="nm">${u.name}</span><span class="meta"><span class="tag">${DATA.cats[u.cat]}</span><span class="fund">Fund ${u.fund} · Org ${u.org}${u.items?'':' · summary'}</span></span></span>
+      <span class="tot">${money(u.total)}</span>
+    </button>${unitBody(u)}</div>`).join('');
+  const shown=list.reduce((a,u)=>a+u.total,0);
+  $('#count').textContent=`${list.length} of ${DATA.units.length} spending units · ${money(shown)} shown`;
+}
+
+$('#cats').addEventListener('click',e=>{const b=e.target.closest('.catrow');if(!b)return;
+  const k=b.dataset.cat;activeCat=(activeCat===k?null:k);
+  document.querySelectorAll('.catrow').forEach(x=>x.classList.toggle('active',x.dataset.cat===activeCat));
+  renderChips();renderLedger();document.getElementById('browse').scrollIntoView();});
+$('#chips').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;
+  activeCat=b.dataset.cat||null;
+  document.querySelectorAll('.catrow').forEach(x=>x.classList.toggle('active',x.dataset.cat===activeCat));
+  renderChips();renderLedger();});
+$('#ledger').addEventListener('click',e=>{const h=e.target.closest('.uhead');if(!h)return;
+  const u=h.parentElement,open=u.classList.toggle('open');h.setAttribute('aria-expanded',open);});
+let tmr;$('#q').addEventListener('input',e=>{clearTimeout(tmr);tmr=setTimeout(()=>{term=e.target.value.trim();renderLedger();},120);});
+$('#sort').addEventListener('change',e=>{sortBy=e.target.value;renderLedger();});
+
+renderChips();renderLedger();
+
+// PEIA
+const P=DATA.peia;
+$('#pgrid').innerHTML=[
+ [short(P.plan_fy27),'Total plan spending, FY2027 (projected)'],
+ [short(P.school_match),'School-employee share in this budget'],
+ [short(P.reserve_fy27),'Total fund reserve, FY2027'],
+ [P.state_reserve_pct+'%','State Fund reserve (at the floor)']
+].map(([n,l])=>`<div class="pcard"><div class="pn">${n}</div><div class="pl">${l}</div></div>`).join('');
+const RMAX=16;
+$('#ptraj').innerHTML='<div class="trow" style="margin-bottom:2px"><span class="tlab" style="font-weight:600;color:#fff">Premium increase by year</span><span></span><span></span></div>'+
+ P.rate.map(([fy,grp,val])=>{const pct=parseInt(val.replace(/[^0-9]/g,''))||0;const calm=fy==='FY2027';
+  return `<div class="trow ${calm?'calm':''}"><span class="tlab">${fy} · ${grp}</span><div class="tbar"><span style="width:${(pct/RMAX*100)}%"></span></div><span class="tval">${val}</span></div>`;}).join('');
+$('#pfacts').innerHTML=P.facts.map(f=>`<li>${f}</li>`).join('');
+$('#pconcern').textContent=P.concern;
+
+// watch list
+$('#cards').innerHTML=DATA.concerns.map(c=>`<div class="flag">
+  <div class="ft">${c.t}</div><span class="amt">${c.amt}</span>
+  <div class="unit">${c.unit}</div><p class="why">${c.why}</p></div>`).join('');
+
+// coverage + sources
+$('#coverage').innerHTML=`<b style="color:#fff">Coverage:</b> FY2026 enacted General Revenue. ${DATA.units.length} spending units shown, summing to ${money(DATA.tracked)} — most of the ~$5.3B fund. Higher-education universities and the grand-total reconciliation are pending the full programmatic build.`;
+$('#sources').innerHTML=DATA.sources.map(([k,d,u])=>`<li><a href="${u}" target="_blank" rel="noopener">${k}</a><br><span style="color:#8aa0b0">${d}</span></li>`).join('');
+</script>
+</body>
+</html>
